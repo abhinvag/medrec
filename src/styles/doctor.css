@@ -1,0 +1,15 @@
+.doctorDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.doctorDivHeading{
+    margin-top: 2%;
+}
+
+.doctorFormDiv{
+    width: 40%;
+    margin: 2%;
+}

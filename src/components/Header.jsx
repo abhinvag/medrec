@@ -1,10 +1,18 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Web3 from "web3";
 import {Navbar, Nav, Container, Button} from 'react-bootstrap'
 
 function Header() {
 
     const [account, setAccount] = useState("");
+
+    useEffect(() => {
+        const addr = sessionStorage.getItem("addr");
+        if(addr){
+            setAccount(addr);
+        }
+    }, [])
+    
 
     const connectMetamask = async () => {
       if (window.ethereum && window.ethereum.isMetaMask) {
@@ -29,7 +37,7 @@ function Header() {
   return (
     <Navbar bg="primary" variant="dark">
         <Container>
-        <Navbar.Brand href="#home">MecRec</Navbar.Brand>
+        <Navbar.Brand href="/">MecRec</Navbar.Brand>
         <Nav className="me-auto">
             {account === "" ? (
                 <Button onClick={() => connectMetamask()} variant="outline-light">Connect MetaMask</Button>
