@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Web3 from "web3";
 import {Navbar, Nav, Container, Button} from 'react-bootstrap'
+import "../styles/header.css";
 
 function Header() {
 
@@ -35,16 +36,16 @@ function Header() {
     });
 
   return (
-    <Navbar bg="primary" variant="dark">
+    <Navbar>
         <Container>
-        <Navbar.Brand href="/">MecRec</Navbar.Brand>
-        <Nav className="me-auto">
-            {account === "" ? (
-                <Button onClick={() => connectMetamask()} variant="outline-light">Connect MetaMask</Button>
-            ):(
-                <Nav.Link>{account}</Nav.Link>
-            )}
-        </Nav>
+            <Navbar.Brand className='customnNavBrand' href="/">MedRec</Navbar.Brand>
+            <Nav className="me-auto">
+                {account === "" ? (
+                    <Button className='customButton' onClick={() => connectMetamask()} variant="outline-light">Connect MetaMask</Button>
+                ):(
+                    <Nav.Link className='ethAddr' >{account}</Nav.Link>
+                )}
+            </Nav>
         </Container>
     </Navbar>
   )

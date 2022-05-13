@@ -1,11 +1,26 @@
 .homeDiv{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
     height: 90vh;
+    width: 100vw;
+    align-items: center;
+}
+
+.login-img{
+    width: 650px;
 }
 
 .login-buttons{
-    margin-top: 1%;
+    /* margin-left: 1%; */
+}
+
+.rightDivHeading{
+    color: #892cdc;
+    margin-bottom: 5%;
+}
+
+.rightDivButtons{
+    display: flex;
+    justify-content: space-evenly;
+    width: 50%;
 }

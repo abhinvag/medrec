@@ -71,7 +71,7 @@ function Doctor() {
                     <Form.Label>Patient's Ethereum Address</Form.Label>
                     <Form.Control onChange={(event) => {setPatientAddr(event.target.value)}} value={patientAddr} placeholder="0x725....." />
                 </Form.Group>
-                <Button variant="primary" type="submit" onClick={(event) => onSubmit(event)}>
+                <Button className='customButton' variant="primary" type="submit" onClick={(event) => onSubmit(event)}>
                     Submit
                 </Button>
             </Form>

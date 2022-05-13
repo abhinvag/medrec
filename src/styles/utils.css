@@ -1,0 +1,55 @@
+.customButton {
+    background-color: #892cdc !important;
+    border-color: #892cdc !important;
+    color: #fff !important;
+}
+  
+.customButton:visited {
+    background-color: #892cdc !important;
+    border-color: #892cdc !important;
+    color: #fff !important;
+}
+
+.customButton:focus {
+    background-color: #892cdc !important;
+    border-color: #892cdc !important;
+    color: #fff !important;
+}
+
+.customButton:hover {
+    background-color: #892cdc !important;
+    border-color: #892cdc !important;
+    color: #fff !important;
+}
+
+.customButton:active {
+    background-color: #892cdc !important;
+    border-color: #892cdc !important;
+    color: #fff !important;
+}
+
+.leftDiv{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rightDiv{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+label{
+    color: rgb(200, 200, 200) !important;
+}
+
+textarea:focus,input:focus{
+    border-color: #892cdc !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #892cdc !important;
+    outline: 0 none;
+}

@@ -7,9 +7,11 @@ import Doctor from "./pages/Doctor";
 import Patient from "./pages/Patient";
 import Header from "./components/Header";
 
+import "./styles/utils.css";
+
 function App() {
   return (
-    <>
+    <div className="app">
       <Router>
         <Header />
         <Routes>
@@ -18,7 +20,7 @@ function App() {
           <Route path="/" exact element={<Home />} />
         </Routes>
       </Router>
-    </>
+    </div>
   );
 }
 
