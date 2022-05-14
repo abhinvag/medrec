@@ -1,31 +1,44 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.5.0 <0.8.0;
+
+//import "./patient.sol";
 
 contract Doctor {
-    mapping (address => doctor) internal doctors;
-    mapping (address => mapping(address => uint)) internal doctorToPatient;
-    
-    struct doctor {
-        string name;
-        address id;
-        address[] patient_list;
-    }
-    
-    modifier checkDoctor(address id) {
-        doctor storage d = doctors[id];
-        require(d.id > address(0x0));//check if doctor exist
-        _;
-    }
-    
-    function getDoctorInfo() public view checkDoctor(msg.sender) returns(string memory,address, address[] memory){
-        doctor storage  d = doctors[msg.sender];
-        return (d.name,d.id, d.patient_list);
-    }
-    
-    function signupDoctor(string memory _name) public {
-        doctor storage d = doctors[msg.sender];
-        require(!(d.id > address(0x0)));
+    //address patientContract = 0xA74098e3398EC2f78CdA221D7ec8680e158a0cbF;
+    mapping(address => uint256) fee;
+    mapping(address => bool) isExists;
 
-        doctors[msg.sender] = doctor({name:_name,id:msg.sender,patient_list:new address[](0)});
-    }    
-    
+    function addDoctor(address doc) public {
+        require(!isExists[doc], "Doctor already exists");
+        fee[doc] = 0;
+        isExists[doc] = true;
+    }
+
+    // function addPrescription(
+    //     address pat,
+    //     address doc,
+    //     string memory presc
+    // ) public {
+    //     require(isExists[doc], "Doctor does not exists");
+    //     Patient patient = Patient(patientContract);
+    //     uint256 charges = getFee(doc);
+    //     patient.getPrescription(presc, pat, payable(doc), charges);
+    // }
+
+    // function checkAuthorization(address doc, address pat)
+    //     public
+    //     view
+    //     returns (bool)
+    // {
+    //     Patient patient = Patient(patientContract);
+    //     return patient.isAuthorized(doc, pat);
+    // }
+
+    function updateFee(address doc, uint256 amount) public {
+        fee[doc] = amount;
+    }
+
+    function getFee(address doc) public view returns (uint256) {
+        return fee[doc];
+    }
 }

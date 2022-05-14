@@ -1,30 +1,30 @@
-import React, {useState} from 'react'
-import {Form, Button} from "react-bootstrap";
+import React, {useState, useEffect} from 'react'
+import {Form, Button, InputGroup, DropdownButton, Dropdown} from "react-bootstrap";
 import { ToastContainer, toast } from 'react-toastify';
+import {Navigate } from "react-router-dom";
 import "../styles/doctor.css";
+import {DOCTOR_ABI, DOCTOR_ADDRESS, PATIENT_ABI, PATIENT_ADDRESS} from "../Config/config"
+import Web3 from "web3";
 
 function Doctor() {
 
-    const [prescription, setPrescription] = useState({
-        "notes": "",
-        "vitals": "",
-        "medicines": "",
-        "advice": ""
-    });
+    const [patientAddr, setPatientAddr] = useState();    
+    const [fees, setFees] = useState();
+    const [redirect, setRedirect] = useState(false);
 
-    const [patientAddr, setPatientAddr] = useState("");
+    useEffect(() => {
+        const fetchCurrentFee = async () => {
+            const addr = sessionStorage.getItem("addr");
+            const web3 = new Web3(window.web3.currentProvider);
+            const doctor = new web3.eth.Contract(DOCTOR_ABI, DOCTOR_ADDRESS);
+            const fee = await doctor.methods.getFee(addr).call();
+            console.log(fee);
+            setFees(fee);
+        }
+        fetchCurrentFee();
+    }, [])
 
-    const updatePrescription = (event) => {
-        const {name, value} = event.target;
-        setPrescription((prevValue) => {
-            return {
-                ...prevValue,
-                [name]: value
-            };
-        });
-    }
-
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         event.preventDefault();
 
         if(patientAddr == ""){
@@ -33,47 +33,59 @@ function Doctor() {
         }
 
         const doctorAddr = sessionStorage.getItem("addr");
+        const web3 = new Web3(window.web3.currentProvider);
+        const patient = new web3.eth.Contract(PATIENT_ABI, PATIENT_ADDRESS);
+        const isAuth = await patient.methods.isAuthorized(doctorAddr, patientAddr).call();
 
-        //TODO: check if pateint has authoriszed this doctor 
-        //TODO: if auth then add this pres in patients's contract
+        if(isAuth){
+            setRedirect(true);
+            return;
+        }
         
-        setPrescription({
-            "notes": "",
-            "vitals": "",
-            "medicines": "",
-            "advice": ""
-        })
-        setPatientAddr("");
-        
+        toast.error("You do not have access to prescribe to this patient");
+        return;
+
+    }
+
+    const updateFees = async (event) => {
+        event.preventDefault();
+        console.log(fees);
+        if(fees < 0){
+            toast.error("Invalid Fees");
+            return;
+        }
+        const addr = sessionStorage.getItem("addr");
+        const web3 = new Web3(window.web3.currentProvider);
+        const doctor = new web3.eth.Contract(DOCTOR_ABI, DOCTOR_ADDRESS);
+        await doctor.methods.updateFee(addr, fees).send({from: addr});
+    }
+
+    if(redirect){
+        sessionStorage.setItem("patientAddr", patientAddr);
+        return <Navigate to="/prescription" />
     }
 
     return (
         <div className='doctorDiv'>
-            <h1 className='doctorDivHeading'>Prescription</h1>
+            <h1 className='heading1'>Doctor's Home</h1>
             <Form className="doctorFormDiv">
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Notes</Form.Label>
-                    <Form.Control onChange={updatePrescription} name='notes' value={prescription.notes} as="textarea" rows={3} placeholder="High Fever" />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Vitals</Form.Label>
-                    <Form.Control onChange={updatePrescription} name='vitals' value={prescription.vitals} as="textarea" placeholder="101 °C" rows={3} />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Medicines</Form.Label>
-                    <Form.Control onChange={updatePrescription} name='medicines' value={prescription.medicines} as="textarea" rows={3}  placeholder="Paracetamol 100mg" />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Advice</Form.Label>
-                    <Form.Control onChange={updatePrescription} name='advice' value={prescription.advice} as="textarea" placeholder="Eat Ice" rows={3} />
-                </Form.Group>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                     <Form.Label>Patient's Ethereum Address</Form.Label>
                     <Form.Control onChange={(event) => {setPatientAddr(event.target.value)}} value={patientAddr} placeholder="0x725....." />
+                    <Button className='customButton formButton' variant="primary" type="submit" onClick={(event) => onSubmit(event)}>
+                        Open Prescription
+                    </Button>
                 </Form.Group>
-                <Button className='customButton' variant="primary" type="submit" onClick={(event) => onSubmit(event)}>
-                    Submit
-                </Button>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Fees</Form.Label>
+                    <InputGroup className="mb-3">
+                        <Form.Control onChange={(event) => {setFees(event.target.value)}} value={fees} placeholder="12" type="Number" />
+                        <InputGroup.Text>wie</InputGroup.Text>
+                    </InputGroup>
+                    <Button className='customButton' variant="primary" type="submit" onClick={(event) => updateFees(event)}>
+                        Update Fees
+                    </Button>
+                </Form.Group>
             </Form>
             <ToastContainer />
         </div>

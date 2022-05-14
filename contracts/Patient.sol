@@ -1,34 +1,59 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.5.0 <0.8.0;
+pragma experimental ABIEncoderV2;
 
 contract Patient {
-    mapping (address => patient) internal patients;
-    mapping (address => mapping (address => uint)) internal patientToDoctor;
-    
-    struct patient {
-        string name;
-        address id;
-        string history;// hashes of file that belong to this user for display purpose
-        address[] doctor_list;
-        address[] request_list;
-    }
-    
-    modifier checkPatient(address id) {
-        patient storage p = patients[id];
-        require(p.id > address(0x0));//check if patient exist
+    mapping(address => uint256) patientBalance;
+    mapping(address => bool) isExists;
+    mapping(address => string[]) prescriptions;
+    mapping(address => mapping(address => bool)) authorized;
+
+    modifier checkExistence(address pat) {
+        require(isExists[pat], "Patient does not exists");
         _;
     }
-    
-    function getPatientInfo() public view checkPatient(msg.sender) returns(string memory,address, string memory, address[] memory, address[] memory) {
-        patient storage p = patients[msg.sender];
-        return (p.name,p.id, p.history, p.doctor_list, p.request_list);
-    }
-    
-    function signupPatient(string memory _name) public {
-        patient storage p = patients[msg.sender];
-        require(!(p.id > address(0x0)));
-        string memory initial = "";
 
-        patients[msg.sender] = patient({name:_name,id:msg.sender,history:initial,doctor_list:new address[](0),request_list:new address[](0)});
+    function addPatient(address pat) public {
+        require(!isExists[pat], "Patient already exists");
+        patientBalance[pat] = 0;
+        isExists[pat] = true;
     }
 
+    function addAuthorization(
+        address doc,
+        address pat,
+        uint256 fee
+    ) external payable checkExistence(pat) {
+        require(msg.value >= fee, "Amount not sufficient");
+        patientBalance[pat] += msg.value;
+        authorized[pat][doc] = true;
+    }
+
+    function viewPrescription(address pat)
+        public
+        view
+        checkExistence(pat)
+        returns (string[] memory)
+    {
+        return prescriptions[pat];
+    }
+
+    function getPrescription(
+        string memory presc,
+        address pat,
+        address payable doc,
+        uint256 charges
+    ) public checkExistence(pat) {
+        require(authorized[pat][doc] == true, "Doctor is not authorized");
+        require(patientBalance[pat] >= charges, "Not sufficent balance");
+        require(bytes(presc).length != 0, "Faulty Prescription");
+        prescriptions[pat].push(presc);
+        patientBalance[pat] -= charges;
+        authorized[pat][doc] = false;
+        doc.transfer(charges);
+    }
+
+    function isAuthorized(address doc, address pat) public view returns (bool) {
+        return authorized[pat][doc];
+    }
 }

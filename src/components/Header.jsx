@@ -32,6 +32,7 @@ function Header() {
             sessionStorage.removeItem("addr");
         } else {
             setAccount(accounts[0]);
+            sessionStorage.setItem("addr", accounts[0]);
         }
     });
 

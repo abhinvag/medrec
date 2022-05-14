@@ -5,12 +5,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Navigate } from "react-router-dom";
 import loginImg from "../assets/undraw_lighthouse_frb8.svg"
+import {DOCTOR_ABI, DOCTOR_ADDRESS, PATIENT_ABI, PATIENT_ADDRESS} from "../Config/config"
+
+import Web3 from "web3";
 
 function Home() {
 
     const [loginAs, setLoginAs] = useState("")
 
-    const checkAccountChange = () => {
+    const checkConnection = () => {
         const addr = sessionStorage.getItem("addr");
         if(!addr){
             toast.error("Connect MetaMask !");
@@ -19,9 +22,21 @@ function Home() {
         return true;
     }
 
-    const login = (as) => {
-        if(checkAccountChange()){
+    const login = async (as) => {
+        
+        if(checkConnection()){
             setLoginAs(as);
+        }
+
+        const addr = sessionStorage.getItem("addr");
+        const web3 = new Web3(window.web3.currentProvider);
+        if(as == "doctor"){
+            const doctor = new web3.eth.Contract(DOCTOR_ABI, DOCTOR_ADDRESS);
+            await doctor.methods.addDoctor(addr).call();
+        }
+        else{
+            const patient = new web3.eth.Contract(PATIENT_ABI, PATIENT_ADDRESS);
+            await patient.methods.addPatient(addr).call();
         }
     }
 
