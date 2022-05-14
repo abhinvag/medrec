@@ -2,6 +2,9 @@ import React, {useState} from 'react'
 import {Form, Button} from "react-bootstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import "../styles/prescription.css";
+import {DOCTOR_ABI, DOCTOR_ADDRESS, PATIENT_ABI, PATIENT_ADDRESS} from "../Config/config"
+import Web3 from "web3";
+import {Navigate} from "react-router-dom";
 
 function Prescription(props) {
 
@@ -14,6 +17,8 @@ function Prescription(props) {
 
     const [patientAddr, setPatientAddr] = useState(sessionStorage.getItem("patientAddr"));
 
+    const [redirect, setRedirect] = useState(false);
+
     const updatePrescription = (event) => {
         const {name, value} = event.target;
         setPrescription((prevValue) => {
@@ -24,7 +29,7 @@ function Prescription(props) {
         });
     }
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         event.preventDefault();
 
         if(patientAddr == ""){
@@ -35,7 +40,22 @@ function Prescription(props) {
         const doctorAddr = sessionStorage.getItem("addr");
 
         //TODO: check if pateint has authoriszed this doctor 
-        //TODO: if auth then add this pres in patients's contract
+
+        const web3 = new Web3(window.web3.currentProvider);
+        const patient = new web3.eth.Contract(PATIENT_ABI, PATIENT_ADDRESS);
+        const doctor = new web3.eth.Contract(DOCTOR_ABI, DOCTOR_ADDRESS);
+        const isAuth = await patient.methods.isAuthorized(doctorAddr, patientAddr).call();
+        
+        if(isAuth){
+            const fee = await doctor.methods.getFee(doctorAddr).call();
+            console.log(fee);
+            console.log(JSON.stringify(prescription));
+            await patient.methods.getPrescription(JSON.stringify(prescription), patientAddr, doctorAddr, fee).send({from: doctorAddr});
+            setRedirect(true);
+        }
+        else{
+            toast.error("You do not have access to prescribe to this patient");
+        }
         
         setPrescription({
             "notes": "",
@@ -43,8 +63,11 @@ function Prescription(props) {
             "medicines": "",
             "advice": ""
         })
-        setPatientAddr("");
         
+    }
+
+    if(redirect){
+        return <Navigate to="/doctor" />
     }
 
     return (

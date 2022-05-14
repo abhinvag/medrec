@@ -67,7 +67,7 @@ function Doctor() {
 
     return (
         <div className='doctorDiv'>
-            <h1 className='heading1'>Doctor's Home</h1>
+            <h1 className='heading1'>Doctor's Dashboard</h1>
             <Form className="doctorFormDiv">
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                     <Form.Label>Patient's Ethereum Address</Form.Label>

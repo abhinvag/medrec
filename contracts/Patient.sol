@@ -23,16 +23,15 @@ contract Patient {
         address doc,
         address pat,
         uint256 fee
-    ) external payable checkExistence(pat) {
-        require(msg.value >= fee, "Amount not sufficient");
-        patientBalance[pat] += msg.value;
+    ) public payable {
+        //require(msg.value >= fee, "Amount not sufficient");
+        patientBalance[pat] += fee;
         authorized[pat][doc] = true;
     }
 
     function viewPrescription(address pat)
         public
         view
-        checkExistence(pat)
         returns (string[] memory)
     {
         return prescriptions[pat];
@@ -43,10 +42,10 @@ contract Patient {
         address pat,
         address payable doc,
         uint256 charges
-    ) public checkExistence(pat) {
-        require(authorized[pat][doc] == true, "Doctor is not authorized");
-        require(patientBalance[pat] >= charges, "Not sufficent balance");
-        require(bytes(presc).length != 0, "Faulty Prescription");
+    ) public {
+        // require(authorized[pat][doc] == true, "Doctor is not authorized");
+        // require(patientBalance[pat] >= charges, "Not sufficent balance");
+        // require(bytes(presc).length != 0, "Faulty Prescription");
         prescriptions[pat].push(presc);
         patientBalance[pat] -= charges;
         authorized[pat][doc] = false;
@@ -55,5 +54,9 @@ contract Patient {
 
     function isAuthorized(address doc, address pat) public view returns (bool) {
         return authorized[pat][doc];
+    }
+
+    function getbalance() public view returns (uint256) {
+        return address(this).balance;
     }
 }
