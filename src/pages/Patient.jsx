@@ -19,10 +19,11 @@ function Patient() {
       const patient = new web3.eth.Contract(PATIENT_ABI,PATIENT_ADDRESS);
       var pres = await patient.methods.viewPrescription(addr).call();
       var parsed = [];
-      for(var i=pres.length-1;i>0;i--){
+      for(var i=pres.length-1;i>=0;i--){
         parsed.push(JSON.parse(pres[i]));
       }
       setPrescriptionList(parsed);
+      console.log(prescriptionList);
     }
     fetchPrescriptionList();
   }, [])
@@ -53,7 +54,7 @@ function Patient() {
         ):(
           <div className='latestPresctiptionContent'>
             <h4>Notes</h4>
-            <p>{prescriptionList[0].note}s</p>
+            <p>{prescriptionList[0].notes}</p>
             <h4>Vitals</h4>
             <p>{prescriptionList[0].vitals}</p>
             <h4>Medicines</h4>
