@@ -4,14 +4,14 @@ Decentralized Medical Record Management App
 
 ## How to Run Locally
 
-### Software Requirements 
+### Software Requirements
 
 - Node
 - Ganache
 - Truffle  
-- Metamask Extension 
+- Metamask Extension
 
-### Start Local Blockchanin
+### Start Local Blockchain
 
 ```
 ganache
@@ -25,18 +25,14 @@ cd utils
 node helper.js 
 ```
 
-- Please verify each of deployed contract's address Config/config.js is similar to that in build folder.   
+- Please verify each of deployed contract's address in Config/config.js is similar to that in build folder.
 
-### Start Frontend 
+### Start Frontend
 
 ```
 npm i
 npm run dev
 ```
-
-
-
-
 
 ## Tech Used
 
