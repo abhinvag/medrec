@@ -24,6 +24,7 @@ contract Patient {
         address pat,
         uint256 fee
     ) external payable {
+        require(authorized[pat][doc] == 0, "Doctor already authorized.");
         require(msg.value >= fee, "Amount not sufficient");
         patientBalance[pat] += msg.value;
         authorized[pat][doc] = fee;
@@ -40,13 +41,10 @@ contract Patient {
     function setPrescription(
         string memory presc,
         address pat,
-        address payable doc,
-        uint256 charges
+        address payable doc
     ) public {
-        require(authorized[pat][doc] == charges, "Doctor is not authorized");
-        require(patientBalance[pat] >= charges, "Not sufficent balance");
-        //require(bytes(presc).length != 0, "Faulty Prescription");
         prescriptions[pat].push(presc);
+        uint256 charges = authorized[pat][doc];
         patientBalance[pat] -= charges;
         authorized[pat][doc] = 0;
         doc.transfer(charges);

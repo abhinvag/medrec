@@ -47,10 +47,10 @@ function Prescription(props) {
         const isAuth = await patient.methods.isAuthorized(doctorAddr, patientAddr).call();
 
         if (isAuth) {
-            const fee = await doctor.methods.getFee(doctorAddr).call();
-            console.log(fee);
+            // const fee = await doctor.methods.getFee(doctorAddr).call();
+            // console.log(fee);
             console.log(JSON.stringify(prescription));
-            await patient.methods.setPrescription(JSON.stringify(prescription), patientAddr, doctorAddr, fee).send({ from: doctorAddr });
+            await patient.methods.setPrescription(JSON.stringify(prescription), patientAddr, doctorAddr).send({ from: doctorAddr });
             setRedirect(true);
         }
         else {
