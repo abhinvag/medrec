@@ -50,7 +50,7 @@ function Prescription(props) {
             const fee = await doctor.methods.getFee(doctorAddr).call();
             console.log(fee);
             console.log(JSON.stringify(prescription));
-            await patient.methods.setPrescription(JSON.stringify(prescription), patientAddr, doctorAddr, fee).send({ from: doctorAddr });
+            await patient.methods.getPrescription(JSON.stringify(prescription), patientAddr, doctorAddr, fee).send({ from: doctorAddr });
             setRedirect(true);
         }
         else {

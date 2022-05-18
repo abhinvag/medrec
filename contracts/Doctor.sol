@@ -18,4 +18,8 @@ contract Doctor {
     function getFee(address doc) public view returns (uint256) {
         return fee[doc];
     }
+
+    function isDoctor(address doc) public view returns (bool) {
+        return isExists[doc];
+    }
 }

@@ -25,18 +25,25 @@ function Home() {
     const login = async (as) => {
 
         if (checkConnection()) {
+            const addr = sessionStorage.getItem("addr");
+            const web3 = new Web3(window.web3.currentProvider);
+            if (as == "doctor") {
+                const doctor = new web3.eth.Contract(DOCTOR_ABI, DOCTOR_ADDRESS);
+                const isDoc = await doctor.methods.isDoctor(addr).call();
+                console.log(isDoc);
+                if (!isDoc) {
+                    await doctor.methods.addDoctor(addr).send({ from: addr });
+                }
+            }
+            else {
+                const patient = new web3.eth.Contract(PATIENT_ABI, PATIENT_ADDRESS);
+                const isPat = await patient.methods.isPatient(addr).call();
+                console.log(isPat);
+                if (!isPat) {
+                    await patient.methods.addPatient(addr).send({ from: addr });
+                }
+            }
             setLoginAs(as);
-        }
-
-        const addr = sessionStorage.getItem("addr");
-        const web3 = new Web3(window.web3.currentProvider);
-        if (as == "doctor") {
-            const doctor = new web3.eth.Contract(DOCTOR_ABI, DOCTOR_ADDRESS);
-            await doctor.methods.addDoctor(addr).call();
-        }
-        else {
-            const patient = new web3.eth.Contract(PATIENT_ABI, PATIENT_ADDRESS);
-            await patient.methods.addPatient(addr).call();
         }
     }
 

@@ -4,11 +4,11 @@ const fs = require("fs");
 
 const content = `
 export const DOCTOR_ADDRESS = "${
-  DoctorContract.networks[1652802724388].address
+  DoctorContract.networks[1652858638124].address
 }";
 export const DOCTOR_ABI = ${JSON.stringify(DoctorContract.abi)};
 export const PATIENT_ADDRESS = "${
-  PatientContract.networks[1652802724388].address
+  PatientContract.networks[1652858638124].address
 }";
 export const PATIENT_ABI = ${JSON.stringify(PatientContract.abi)};
 `;
