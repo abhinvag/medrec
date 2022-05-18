@@ -37,7 +37,7 @@ contract Patient {
         return prescriptions[pat];
     }
 
-    function getPrescription(
+    function setPrescription(
         string memory presc,
         address pat,
         address payable doc,
