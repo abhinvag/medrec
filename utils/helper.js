@@ -4,11 +4,11 @@ const fs = require("fs");
 
 const content = `
 export const DOCTOR_ADDRESS = "${
-  DoctorContract.networks[1652858638124].address
+  DoctorContract.networks[1653626453914].address
 }";
 export const DOCTOR_ABI = ${JSON.stringify(DoctorContract.abi)};
 export const PATIENT_ADDRESS = "${
-  PatientContract.networks[1652858638124].address
+  PatientContract.networks[1653626453914].address
 }";
 export const PATIENT_ABI = ${JSON.stringify(PatientContract.abi)};
 `;
@@ -20,6 +20,6 @@ fs.writeFile("./src/Config/config.js", content, (err) => {
     console.error(err);
     return;
   } else {
-    console.log("Write Suucessfull");
+    console.log("Write Successfull");
   }
 });
